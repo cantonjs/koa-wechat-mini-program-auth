@@ -1,55 +1,58 @@
+import { isFunction } from './utils';
+
 export default function createWechatMiniProgramMiddlewares(config = {}) {
 	const {
 		stateProp,
-		userStateProp = 'wechatUser',
+		userInfoProp = 'wechatUser',
 		getParams = (ctx) => ctx.params.body,
+		interceptError,
 	} = config;
 
-	const callHelper = async function callHelper(method, ctx, next, params) {
-		const res = await ctx.state[stateProp][method](params);
-		if (res instanceof Error) {
-			const { statusCode = 401, message = 'Unauthorized' } = res;
-			ctx.throw(statusCode, message);
+	const tryRun = async function tryRun(ctx, fn) {
+		try {
+			return await fn();
 		}
-		else {
-			ctx.body = res;
+		catch (err) {
+			const error = isFunction(interceptError) ? interceptError(err) : err;
+			if (error) {
+				const { statusCode = 401, message = 'Unauthorized' } = error;
+				ctx.throw(statusCode, message);
+			}
 		}
 	};
 
 	return {
-		async login(ctx, next) {
-			await callHelper('login', ctx, next, ctx.params.body);
+		async login(ctx) {
+			await tryRun(ctx, async () => {
+				ctx.body = await ctx.state[stateProp].login(ctx.params.body);
+			});
 		},
-		async getUserInfo(ctx, next) {
-			await callHelper('getUserInfo', ctx, next, ctx.query);
+		async getUserInfo(ctx) {
+			await tryRun(ctx, async () => {
+				ctx.body = await ctx.state[stateProp].getUserInfo(ctx.query);
+			});
 		},
-		async loginAndGetUserInfo(ctx, next) {
-			await callHelper('loginAndGetUserInfo', ctx, next, ctx.params.body);
+		async loginAndGetUserInfo(ctx) {
+			await tryRun(ctx, async () => {
+				ctx.body = await ctx.state[stateProp].loginAndGetUserInfo(
+					ctx.params.body,
+				);
+			});
 		},
 		async auth(ctx, next) {
-			const params = getParams(ctx);
-			const res = await ctx.state[stateProp].loginAndGetUserInfo(params);
-			if (res instanceof Error) {
-				const { statusCode = 401, message = 'Unauthorized' } = res;
-				ctx.throw(statusCode, message);
-			}
-			else {
-				ctx.state[userStateProp] = res;
+			await tryRun(ctx, async () => {
+				const params = getParams(ctx);
+				const userInfo = await ctx.state[stateProp].loginAndGetUserInfo(params);
+				ctx.state[userInfoProp] = userInfo;
 				await next();
-			}
+			});
 		},
-
-		// TODO: error handler
 		async verify(ctx, next) {
-			try {
+			await tryRun(ctx, async () => {
 				const params = getParams(ctx);
 				await ctx.state[stateProp].verify(params);
 				await next();
-			}
-			catch (err) {
-				const { statusCode = 401, message = 'Unauthorized' } = err;
-				ctx.throw(statusCode, message);
-			}
+			});
 		},
 	};
 }

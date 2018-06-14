@@ -1,6 +1,7 @@
 import cache from './NOT_RECOMMENDED_cache';
 
 export const isObject = (o) => typeof o === 'object';
+export const isFunction = (f) => typeof f === 'function';
 
 export const defaultSign = (openid) => ({ openid });
 
