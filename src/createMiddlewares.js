@@ -4,52 +4,55 @@ export default function createWechatMiniProgramMiddlewares(config = {}) {
 	const {
 		stateProp,
 		userInfoProp = 'wechatUser',
-		getParams = (ctx) => ctx.params.body,
+		mapParams = (ctx) => ctx.params.body,
 		interceptError,
 	} = config;
 
-	const tryRun = async function tryRun(ctx, fn) {
-		try {
-			return await fn();
-		}
-		catch (err) {
-			const error = isFunction(interceptError) ? interceptError(err) : err;
-			if (error) {
-				const { statusCode = 401, message = 'Unauthorized' } = error;
-				ctx.throw(statusCode, message);
+	const createMiddleware = async function createMiddleware(
+		options = {},
+		handle,
+	) {
+		return async function middleware(ctx, next) {
+			try {
+				const params = (options.mapParams || mapParams)(ctx);
+				return await handle(params, ctx, next);
 			}
-		}
+			catch (err) {
+				const error = isFunction(interceptError) ? interceptError(err) : err;
+				if (error) {
+					const { statusCode = 401, message = 'Unauthorized' } = error;
+					ctx.throw(statusCode, message);
+				}
+			}
+		};
 	};
 
 	return {
-		async login(ctx) {
-			await tryRun(ctx, async () => {
-				ctx.body = await ctx.state[stateProp].login(ctx.params.body);
+		login(options) {
+			return createMiddleware(options, async (params, ctx) => {
+				ctx.body = await ctx.state[stateProp].login(params);
 			});
 		},
-		async getUserInfo(ctx) {
-			await tryRun(ctx, async () => {
-				ctx.body = await ctx.state[stateProp].getUserInfo(ctx.query);
+		getUserInfo(options) {
+			return createMiddleware(options, async (params, ctx) => {
+				ctx.body = await ctx.state[stateProp].getUserInfo(params);
 			});
 		},
-		async loginAndGetUserInfo(ctx) {
-			await tryRun(ctx, async () => {
-				ctx.body = await ctx.state[stateProp].loginAndGetUserInfo(
-					ctx.params.body,
-				);
+		loginAndGetUserInfo(options) {
+			return createMiddleware(options, async (params, ctx) => {
+				ctx.body = await ctx.state[stateProp].loginAndGetUserInfo(params);
 			});
 		},
-		async auth(ctx, next) {
-			await tryRun(ctx, async () => {
-				const params = getParams(ctx);
+		auth(options = {}) {
+			const prop = options.userInfoProp || userInfoProp;
+			return createMiddleware(options, async (params, ctx, next) => {
 				const userInfo = await ctx.state[stateProp].loginAndGetUserInfo(params);
-				ctx.state[userInfoProp] = userInfo;
+				ctx.state[prop] = userInfo;
 				await next();
 			});
 		},
-		async verify(ctx, next) {
-			await tryRun(ctx, async () => {
-				const params = getParams(ctx);
+		verify(options) {
+			return createMiddleware(options, async (params, ctx, next) => {
 				await ctx.state[stateProp].verify(params);
 				await next();
 			});
