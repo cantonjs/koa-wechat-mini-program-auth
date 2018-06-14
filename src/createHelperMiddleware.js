@@ -1,7 +1,9 @@
 import requestLogin from './requestLogin';
 import getUserInfo from './getUserInfo';
+import assert from 'assert';
 import {
 	isObject,
+	isFunction,
 	defaultSign,
 	defaultVerifySign,
 	defaultGetSessionKey,
@@ -12,12 +14,28 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 	const {
 		appId,
 		appSecret,
-		sign = defaultSign,
-		verifySign = defaultVerifySign,
-		setSessionKey = defaultGetSessionKey,
-		getSessionKey = defaultSetSessionKey,
 		stateProp = 'wechatMiniProgram',
 	} = config;
+
+	assert(appId, 'Missing "appId"');
+	assert(appSecret, 'Missing "appSecret"');
+
+	const warnings = [];
+	const defaults = (name, fallback) => {
+		if (isFunction(config[name])) return config[name];
+		warnings.push(name);
+		return fallback;
+	};
+
+	const sign = defaults('sign', defaultSign);
+	const verifySign = defaults('verifySign', defaultVerifySign);
+	const setSessionKey = defaults('setSessionKey', defaultSetSessionKey);
+	const getSessionKey = defaults('getSessionKey', defaultGetSessionKey);
+
+	if (warnings.length) {
+		const missingProps = warnings.map((n) => `"${n}()"`).join(', ');
+		console.warn(`It's highly recommended to set custom ${missingProps}`);
+	}
 
 	const applyLogin = async function applyLogin(params = {}) {
 		const { code } = params;
