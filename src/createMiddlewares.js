@@ -1,9 +1,10 @@
+import { DEFAULT_HELPER_KEY, DEFAULT_USER_KEY } from './constants';
 import { isFunction } from './utils';
 
 export default function createWechatMiniProgramMiddlewares(config = {}) {
 	const {
-		stateProp,
-		userInfoProp = 'wechatUser',
+		stateKey = DEFAULT_HELPER_KEY,
+		userInfoKey = DEFAULT_USER_KEY,
 		mapParams = (ctx) => ctx.params.body,
 		interceptError,
 	} = config;
@@ -30,30 +31,30 @@ export default function createWechatMiniProgramMiddlewares(config = {}) {
 	return {
 		login(options) {
 			return createMiddleware(options, async (params, ctx) => {
-				ctx.body = await ctx.state[stateProp].login(params);
+				ctx.body = await ctx.state[stateKey].login(params);
 			});
 		},
 		getUserInfo(options) {
 			return createMiddleware(options, async (params, ctx) => {
-				ctx.body = await ctx.state[stateProp].getUserInfo(params);
+				ctx.body = await ctx.state[stateKey].getUserInfo(params);
 			});
 		},
 		loginAndGetUserInfo(options) {
 			return createMiddleware(options, async (params, ctx) => {
-				ctx.body = await ctx.state[stateProp].loginAndGetUserInfo(params);
+				ctx.body = await ctx.state[stateKey].loginAndGetUserInfo(params);
 			});
 		},
 		auth(options = {}) {
-			const prop = options.userInfoProp || userInfoProp;
+			const key = options.userInfoKey || userInfoKey;
 			return createMiddleware(options, async (params, ctx, next) => {
-				const userInfo = await ctx.state[stateProp].loginAndGetUserInfo(params);
-				ctx.state[prop] = userInfo;
+				const userInfo = await ctx.state[stateKey].loginAndGetUserInfo(params);
+				ctx.state[key] = userInfo;
 				await next();
 			});
 		},
 		verify(options) {
 			return createMiddleware(options, async (params, ctx, next) => {
-				await ctx.state[stateProp].verify(params);
+				await ctx.state[stateKey].verify(params);
 				await next();
 			});
 		},

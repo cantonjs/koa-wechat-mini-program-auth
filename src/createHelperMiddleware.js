@@ -1,7 +1,9 @@
 import requestLogin from './requestLogin';
 import getUserInfo from './getUserInfo';
-import assert from 'assert';
+import { DEFAULT_HELPER_KEY, LOGIN_URL } from './constants';
 import {
+	assert,
+	warn,
 	isObject,
 	isFunction,
 	defaultSign,
@@ -14,7 +16,8 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 	const {
 		appId,
 		appSecret,
-		stateProp = 'wechatMiniProgram',
+		stateKey = DEFAULT_HELPER_KEY,
+		wechatLoginURL = LOGIN_URL,
 	} = config;
 
 	assert(appId, 'Missing "appId"');
@@ -34,12 +37,13 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 
 	if (warnings.length) {
 		const missingProps = warnings.map((n) => `"${n}()"`).join(', ');
-		console.warn(`It's highly recommended to set custom ${missingProps}`);
+		warn(`It's highly recommended to set custom ${missingProps}`);
 	}
 
 	const applyLogin = async function applyLogin(params = {}) {
 		const { code } = params;
-		const { openid, unionid, sessionKey } = await requestLogin({
+		assert(code, 'Missing "code"');
+		const { openid, unionid, sessionKey } = await requestLogin(wechatLoginURL, {
 			appId,
 			appSecret,
 			code,
@@ -89,7 +93,7 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 	};
 
 	return async function wechatMiniProgramAuthMiddleware(ctx, next) {
-		ctx.state[stateProp] = helper;
+		ctx.state[stateKey] = helper;
 		await next();
 	};
 }

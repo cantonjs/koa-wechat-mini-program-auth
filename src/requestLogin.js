@@ -1,16 +1,15 @@
-import { LOGIN_URL } from './constants';
 import qs from 'querystring';
 import fetch from 'node-fetch';
 
-export default async function requestLogin({ appId, appSecret, code }) {
+export default async function requestLogin(url, { appId, appSecret, code }) {
 	const query = qs.stringify({
 		appid: appId,
 		secret: appSecret,
 		js_code: code,
 		grant_type: 'authorization_code',
 	});
-	const url = `${LOGIN_URL}?${query}`;
-	const res = await fetch(url);
+	const fullUrl = `${url}?${query}`;
+	const res = await fetch(fullUrl);
 	const { errcode, errmsg, ...rest } = await res.json();
 	if (errcode) {
 		const err = new Error(errmsg);

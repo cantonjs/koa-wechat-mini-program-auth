@@ -1,4 +1,9 @@
+import nativeAssert from 'assert';
 import cache from './NOT_RECOMMENDED_cache';
+import { name } from '../package.json';
+
+export const assert = (val, msg) => nativeAssert(val, `[${name}] ${msg}`);
+export const warn = (...msg) => console.warn(`[${name}]`, ...msg);
 
 export const isObject = (o) => typeof o === 'object';
 export const isFunction = (f) => typeof f === 'function';
