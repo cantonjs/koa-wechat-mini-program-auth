@@ -1,7 +1,7 @@
 {
   "name": "koa-wechat-mini-program-auth",
   "description": "koa middleware for wechat mini program login and get user info",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "lib/index",
   "files": [
     "*.md",
