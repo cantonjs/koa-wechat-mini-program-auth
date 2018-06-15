@@ -1,15 +1,8 @@
-import crypto from 'crypto';
-
-const cryptoSha1 = function cryptoSha1(str) {
-	return crypto
-		.createHash('sha1')
-		.update(str)
-		.digest('hex');
-};
+import { sha1 } from './utils';
 
 export default function parseRawData({ rawData, signature, sessionKey }) {
-	const sha1 = cryptoSha1(rawData + sessionKey);
-	if (signature !== sha1) {
+	const target = sha1(rawData + sessionKey);
+	if (signature !== target) {
 		throw new Error('Illegal Signature');
 	}
 	return JSON.parse(rawData);

@@ -4,6 +4,7 @@ import { DEFAULT_HELPER_KEY, LOGIN_URL } from './constants';
 import {
 	assert,
 	warn,
+	isString,
 	isObject,
 	isFunction,
 	defaultSign,
@@ -17,7 +18,7 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 		appId,
 		appSecret,
 		stateKey = DEFAULT_HELPER_KEY,
-		wechatLoginURL = LOGIN_URL,
+		wechatLoginURL = LOGIN_URL, // for test only
 	} = config;
 
 	assert(appId, 'Missing "appId"');
@@ -59,9 +60,10 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 	const verify = async function verify(params) {
 		const id = await verifySign(params);
 		const sessionKey = await getSessionKey(id);
-		if (!sessionKey) {
+		if (!isString(sessionKey)) {
 			throw new Error('Illegal Session Key');
 		}
+		return sessionKey;
 	};
 
 	const helper = {
@@ -87,8 +89,7 @@ export default function createWechatMiniProgramMiddleware(config = {}) {
 			return { ...res, userInfo };
 		},
 		async verify(params = {}) {
-			const sessionKey = await verify(params);
-			return !!sessionKey;
+			await verify(params);
 		},
 	};
 

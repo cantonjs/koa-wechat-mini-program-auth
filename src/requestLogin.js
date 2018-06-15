@@ -16,6 +16,6 @@ export default async function requestLogin(url, { appId, appSecret, code }) {
 		err.code = errcode;
 		throw err;
 	}
-	res.sessionKey = res.session_key;
+	rest.sessionKey = rest.session_key;
 	return rest;
 }
