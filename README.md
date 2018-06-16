@@ -3,6 +3,7 @@
 [![CircleCI](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth.svg?style=shield)](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth)
 [![Build Status](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth.svg?branch=master)](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![License](https://img.shields.io/badge/license-MIT_License-brightgreen.svg?style=flat)](https://github.com/cantonjs/koa-wechat-mini-program-auth/master/LICENSE.md)
 
 Low level wechat mini program auth helper for koa middleware
 
@@ -89,7 +90,7 @@ Create and inject a [helper object](#wechatminiprogram) to `ctx.state`. Will ret
 
 ##### Returns
 
-[UserInfo](https://developers.weixin.qq.com/miniprogram/dev/api/open.html#wxgetuserinfoobject) \<String\>
+Promise of [UserInfo](https://developers.weixin.qq.com/miniprogram/dev/api/open.html#wxgetuserinfoobject) object
 
 #### wechatMiniProgram.getSession(params)
 
@@ -99,7 +100,7 @@ Create and inject a [helper object](#wechatminiprogram) to `ctx.state`. Will ret
 
 ##### Returns
 
-Object containing `sessionKey`, `openid`, `unionid` (optional)
+Promise of object containing `sessionKey`, `openid`, and optional `unionid`
 
 ## License
 
