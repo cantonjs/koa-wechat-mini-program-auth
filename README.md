@@ -4,6 +4,17 @@
 
 Low level wechat mini program auth helper for koa middleware
 
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Reference](#reference)
+  - [koaWechatMiniProgramAuth(config)](#koawechatminiprogramauthconfig)
+  - [wechatMiniProgram](#wechatminiprogram)
+- [License](#license)
+
 ## Features
 
 - ✅ Auto decode `rawData` or `encryptedData`
@@ -46,9 +57,9 @@ app.use(async (ctx, next) => {
 
 ## Reference
 
-### `koaWechatMiniProgramAuth(config)`
+### koaWechatMiniProgramAuth(config)
 
-Create and inject a helper object to `ctx.state`. Will return a koa middleware.
+Create and inject a [helper object](#wechatminiprogram) to `ctx.state`. Will return a koa middleware.
 
 #### Config
 
@@ -56,7 +67,7 @@ Create and inject a helper object to `ctx.state`. Will return a koa middleware.
 - `appSecret` \<String\>: Wechat app secret, required
 - `stateKey` \<String\>: Helper key name to `ctx.state`, defaults to `wechatMiniProgram`
 
-### `wechatMiniProgram` Auth Helper
+### wechatMiniProgram
 
 #### wechatMiniProgram.getUserInfo(params)
 
