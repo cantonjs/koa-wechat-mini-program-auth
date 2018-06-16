@@ -21,10 +21,31 @@ describe('state.wechatMiniProgram object', () => {
 		);
 	});
 
-	test('should login() work', async () => {
+	test('should getSession() work', async () => {
 		const spy = jest.fn(async (ctx, next) => {
-			const res = await ctx.state.wechatMiniProgram.login({ code: 'fake' });
-			expect(Object.keys(res)).toEqual(['openid']);
+			const res = await ctx.state.wechatMiniProgram.getSession({
+				code: 'fake',
+			});
+			expect(Object.keys(res)).toEqual(['openid', 'sessionKey']);
+			await next();
+		});
+		await startServer((app, opts) => app.use(auth(opts)).use(spy));
+		const response = await request();
+		expect(response.ok).toBe(true);
+	});
+
+	test('should getUserInfo() work by code', async () => {
+		const json = { hello: 'world' };
+		const rawData = JSON.stringify(json);
+
+		const spy = jest.fn(async (ctx, next) => {
+			const res = await ctx.state.wechatMiniProgram.getUserInfo({
+				rawData,
+				signature: sha1(rawData + sessionKey),
+				openid: 'fake',
+				code: 'fake',
+			});
+			expect(res).toEqual(json);
 			await next();
 		});
 		await startServer((app, opts) => app.use(auth(opts)).use(spy));
@@ -35,33 +56,23 @@ describe('state.wechatMiniProgram object', () => {
 	test('should getUserInfo() with rawData work', async () => {
 		const json = { hello: 'world' };
 		const rawData = JSON.stringify(json);
-		const fakeSessionKey = sessionKey;
 
 		const spy = jest.fn(async (ctx, next) => {
 			const res = await ctx.state.wechatMiniProgram.getUserInfo({
 				rawData,
-				signature: sha1(rawData + fakeSessionKey),
+				signature: sha1(rawData + sessionKey),
 				openid: 'fake',
+				sessionKey,
 			});
 			expect(res).toEqual(json);
 			await next();
 		});
-		await startServer((app, opts) =>
-			app
-				.use(
-					auth({
-						...opts,
-						getSessionKey: () => fakeSessionKey,
-					}),
-				)
-				.use(spy),
-		);
+		await startServer((app, opts) => app.use(auth(opts)).use(spy));
 		const response = await request();
 		expect(response.ok).toBe(true);
 	});
 
 	test('should getUserInfo() with encryptedData work', async () => {
-		const fakeSessionKey = sessionKey;
 		const { watermark, ...expectedUserInfo } = decoded;
 
 		const spy = jest.fn(async (ctx, next) => {
@@ -70,61 +81,13 @@ describe('state.wechatMiniProgram object', () => {
 				encryptedData,
 				openid: 'fake',
 				appId,
+				sessionKey,
 			});
 			expect(res).toEqual(expectedUserInfo);
 			await next();
 		});
-		await startServer((app, opts) =>
-			app
-				.use(
-					auth({
-						...opts,
-						getSessionKey: () => fakeSessionKey,
-					}),
-				)
-				.use(spy),
-		);
+		await startServer((app, opts) => app.use(auth(opts)).use(spy));
 		const response = await request();
 		expect(response.ok).toBe(true);
-	});
-
-	test('should verify() return true if session key exists', async () => {
-		const spy = jest.fn(async (ctx, next) => {
-			await ctx.state.wechatMiniProgram.verify({ openid: 'fake' });
-			await next();
-		});
-		await startServer((app, opts) =>
-			app
-				.use(
-					auth({
-						...opts,
-						getSessionKey: () => sessionKey,
-					}),
-				)
-				.use(spy),
-		);
-		const response = await request();
-		expect(response.ok).toBe(true);
-	});
-
-	test('should verify() return false if session key not exists', async () => {
-		const spy = jest.fn(async (ctx, next) => {
-			await ctx.state.wechatMiniProgram.verify({
-				openid: 'fake',
-			});
-			await next();
-		});
-		await startServer((app, opts) =>
-			app
-				.use(
-					auth({
-						...opts,
-						getSessionKey: () => null,
-					}),
-				)
-				.use(spy),
-		);
-		const response = await request();
-		expect(response.ok).toBe(false);
 	});
 });
