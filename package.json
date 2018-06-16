@@ -17,7 +17,18 @@
 	"engines": {
 		"node": ">=7.6"
 	},
-	"keywords": [],
+	"keywords": [
+		"koa",
+		"middleware",
+		"wechat",
+		"mini-program",
+		"微信小程序",
+		"小程序",
+		"session",
+		"auth",
+		"wxapp",
+		"weapp"
+	],
 	"license": "MIT",
 	"dependencies": {
 		"node-fetch": "^2.1.2"
