@@ -1,5 +1,6 @@
 # koa-wechat-mini-program-auth
 
+[![Build Status](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth.svg?branch=master)](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 Low level wechat mini program auth helper for koa middleware
