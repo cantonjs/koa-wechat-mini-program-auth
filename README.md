@@ -1,5 +1,5 @@
-# koa-wechat-mini-program-auth
-
+# [WIP] koa-wechat-mini-program-auth
+<!-- 
 [![CircleCI](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth.svg?style=shield)](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth)
 [![Build Status](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth.svg?branch=master)](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
@@ -100,7 +100,7 @@ Promise of [UserInfo](https://developers.weixin.qq.com/miniprogram/dev/api/open.
 
 ##### Returns
 
-Promise of object containing `sessionKey`, `openid`, and optional `unionid`
+Promise of object containing `sessionKey`, `openid`, and optional `unionid` -->
 
 ## License
 
