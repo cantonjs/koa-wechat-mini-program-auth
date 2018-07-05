@@ -1,5 +1,5 @@
 {
-	"name": "koa-wechat-mini-program-auth",
+	"name": "koa-wxapp-auth",
 	"description": "low level wechat mini program auth helper for koa middleware",
 	"version": "0.1.0",
 	"main": "lib/index",
@@ -13,7 +13,7 @@
 		"preversion": "yarn test && yarn build"
 	},
 	"author": "Cap32",
-	"repository": "cantonjs/koa-wechat-mini-program-auth",
+	"repository": "cantonjs/koa-wxapp-auth",
 	"engines": {
 		"node": ">=7.6"
 	},

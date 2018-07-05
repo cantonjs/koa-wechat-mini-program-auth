@@ -1,12 +1,12 @@
-# [WIP] koa-wechat-mini-program-auth
+# [WIP] koa-wxapp-auth
 
-Please use [wechat-mini-program-auth](https://github.com/cantonjs/wechat-mini-program-auth) instead
+Please use [wxapp-auth](https://github.com/cantonjs/wxapp-auth) instead
 
 <!--
-[![CircleCI](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth.svg?style=shield)](https://circleci.com/gh/cantonjs/koa-wechat-mini-program-auth)
-[![Build Status](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth.svg?branch=master)](https://travis-ci.org/cantonjs/koa-wechat-mini-program-auth)
+[![CircleCI](https://circleci.com/gh/cantonjs/koa-wxapp-auth.svg?style=shield)](https://circleci.com/gh/cantonjs/koa-wxapp-auth)
+[![Build Status](https://travis-ci.org/cantonjs/koa-wxapp-auth.svg?branch=master)](https://travis-ci.org/cantonjs/koa-wxapp-auth)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![License](https://img.shields.io/badge/license-MIT_License-brightgreen.svg?style=flat)](https://github.com/cantonjs/koa-wechat-mini-program-auth/master/LICENSE.md)
+[![License](https://img.shields.io/badge/license-MIT_License-brightgreen.svg?style=flat)](https://github.com/cantonjs/koa-wxapp-auth/master/LICENSE.md)
 
 Low level wechat mini program auth helper for koa middleware
 
@@ -32,14 +32,14 @@ Low level wechat mini program auth helper for koa middleware
 ## Installation
 
 ```bash
-yarn add koa-wechat-mini-program-auth
+yarn add koa-wxapp-auth
 ```
 
 ## Usage
 
 ```js
 import Koa from 'koa';
-import koaWechatMiniProgramAuth from 'koa-wechat-mini-program-auth';
+import koaWechatMiniProgramAuth from 'koa-wxapp-auth';
 
 const app = new Koa();
 // ...

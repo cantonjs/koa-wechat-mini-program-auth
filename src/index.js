@@ -1,1 +1,1 @@
-export default from './koaWechatMiniProgramAuth';
+export default from './koaWxappAuth';

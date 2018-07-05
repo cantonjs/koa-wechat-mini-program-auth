@@ -3,10 +3,10 @@ import { sha1 } from '../src/utils';
 import { startServer, stopServer, request } from './utils';
 import { sessionKey, appId, iv, encryptedData, decoded } from './fixtures';
 
-describe('state.wechatMiniProgram object', () => {
+describe('state.wxapp object', () => {
 	afterEach(stopServer);
 
-	test('should inject `wechatMiniProgram`', async () => {
+	test('should inject `wxapp`', async () => {
 		const spy = jest.fn(async (ctx, next) => next());
 		await startServer((app, opts) => app.use(auth(opts)).use(spy));
 		const response = await request();
@@ -14,7 +14,7 @@ describe('state.wechatMiniProgram object', () => {
 		expect(spy).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				state: expect.objectContaining({
-					wechatMiniProgram: expect.any(Object),
+					wxapp: expect.any(Object),
 				}),
 			}),
 			expect.any(Function),
@@ -23,7 +23,7 @@ describe('state.wechatMiniProgram object', () => {
 
 	test('should getSession() work', async () => {
 		const spy = jest.fn(async (ctx, next) => {
-			const res = await ctx.state.wechatMiniProgram.getSession({
+			const res = await ctx.state.wxapp.getSession({
 				code: 'fake',
 			});
 			expect(Object.keys(res)).toEqual(['openid', 'sessionKey']);
@@ -39,7 +39,7 @@ describe('state.wechatMiniProgram object', () => {
 		const rawData = JSON.stringify(json);
 
 		const spy = jest.fn(async (ctx, next) => {
-			const res = await ctx.state.wechatMiniProgram.getUserInfo({
+			const res = await ctx.state.wxapp.getUserInfo({
 				rawData,
 				signature: sha1(rawData + sessionKey),
 				openid: 'fake',
@@ -58,7 +58,7 @@ describe('state.wechatMiniProgram object', () => {
 		const rawData = JSON.stringify(json);
 
 		const spy = jest.fn(async (ctx, next) => {
-			const res = await ctx.state.wechatMiniProgram.getUserInfo({
+			const res = await ctx.state.wxapp.getUserInfo({
 				rawData,
 				signature: sha1(rawData + sessionKey),
 				openid: 'fake',
@@ -76,7 +76,7 @@ describe('state.wechatMiniProgram object', () => {
 		const { watermark, ...expectedUserInfo } = decoded;
 
 		const spy = jest.fn(async (ctx, next) => {
-			const res = await ctx.state.wechatMiniProgram.getUserInfo({
+			const res = await ctx.state.wxapp.getUserInfo({
 				iv,
 				encryptedData,
 				openid: 'fake',

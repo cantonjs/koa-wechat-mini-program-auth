@@ -3,7 +3,7 @@ import getUserInfo from './getUserInfo';
 import { DEFAULT_HELPER_KEY, LOGIN_URL } from './constants';
 import { assert } from './utils';
 
-export default function koaWechatMiniProgramAuth(config = {}) {
+export default function koaWexappAuth(config = {}) {
 	const {
 		appId,
 		appSecret,
@@ -51,7 +51,7 @@ export default function koaWechatMiniProgramAuth(config = {}) {
 		},
 	};
 
-	return async function wechatMiniProgramAuthMiddleware(ctx, next) {
+	return async function wxappAuthMiddleware(ctx, next) {
 		ctx.state[stateKey] = helper;
 		await next();
 	};
