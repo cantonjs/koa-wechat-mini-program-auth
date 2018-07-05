@@ -1,9 +1,12 @@
 {
 	"name": "koa-wxapp-auth",
 	"description": "low level wechat mini program auth helper for koa middleware",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"main": "lib/index",
-	"files": ["*.md", "lib"],
+	"files": [
+		"*.md",
+		"lib"
+	],
 	"scripts": {
 		"start": "yarn test --watchAll",
 		"test": "cross-env NODE_ENV=development jest",
@@ -63,7 +66,12 @@
 		"rimraf": "^2.5.4"
 	},
 	"jest": {
-		"collectCoverageFrom": ["src/**/*.js"],
-		"modulePathIgnorePatterns": ["node_modules", "lib"]
+		"collectCoverageFrom": [
+			"src/**/*.js"
+		],
+		"modulePathIgnorePatterns": [
+			"node_modules",
+			"lib"
+		]
 	}
 }
